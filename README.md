@@ -5,7 +5,7 @@ An event bus designed to decouple different parts of your application while stil
 
 
 ## License
-```
+```txt
 Copyright 2021 MRyan
 
 Licensed under the Apache License, Version 2.0 (the "License");
