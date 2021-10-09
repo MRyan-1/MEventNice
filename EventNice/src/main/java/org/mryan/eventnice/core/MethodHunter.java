@@ -1,5 +1,6 @@
 package org.mryan.eventnice.core;
 
+import java.lang.reflect.Method;
 import java.util.Set;
 
 /**
@@ -17,7 +18,6 @@ public interface MethodHunter {
      * @param annotation
      * @return
      */
-    Set<MethodInfo> huntingMethods(final Object target,
-                                   final Class<?> targetClass);
+    Set<Method> huntingMethods(Class<?> clazz);
 
 }

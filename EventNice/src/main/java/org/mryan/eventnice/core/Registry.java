@@ -1,5 +1,7 @@
 package org.mryan.eventnice.core;
 
+import java.lang.reflect.InvocationTargetException;
+
 /**
  * @description： 注册中心
  * @Author MRyan
@@ -16,7 +18,7 @@ public interface Registry {
      * @param target
      * @return
      */
-    boolean register(Object target);
+    boolean register(Object target) throws InvocationTargetException, IllegalAccessException;
 
     /**
      * unregister event target

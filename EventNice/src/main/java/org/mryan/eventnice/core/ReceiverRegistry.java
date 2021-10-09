@@ -1,9 +1,8 @@
 package org.mryan.eventnice.core;
 
-import java.lang.annotation.Annotation;
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.CopyOnWriteArraySet;
@@ -17,14 +16,15 @@ import java.util.concurrent.CopyOnWriteArraySet;
 public class ReceiverRegistry implements Registry {
 
 
-    private final ConcurrentMap<Class<?>, CopyOnWriteArraySet<EventReceiver>> eventReceivers = new ConcurrentHashMap<>();
+    private final ConcurrentMap<Class<?>, CopyOnWriteArraySet<EventReceiver>> registry = new ConcurrentHashMap<>();
 
     /**
      * method捕猎者
      */
-    private MethodHunter methodHunter;
+    private final MethodHunter methodHunter;
 
     public ReceiverRegistry() {
+        this.methodHunter = new AnnotationMethodHunter();
     }
 
 
@@ -33,31 +33,53 @@ public class ReceiverRegistry implements Registry {
      * 注册事件接收器的目标对象
      * 保证后续调度时 可以触发该事件接收器定义的事件
      *
-     * @param target
+     * @param receiver
      * @return
      */
     @Override
-    public boolean register(Object target) {
-        //todo register
-        return false;
+    public boolean register(Object receiver) {
+        Map<Class<?>, Collection<EventReceiver>> receivers = findAllEventReceiver(receiver);
+        for (Map.Entry<Class<?>, Collection<EventReceiver>> entry : receivers.entrySet()) {
+            Class<?> eventType = entry.getKey();
+            Collection<EventReceiver> eventReceivers = entry.getValue();
+            CopyOnWriteArraySet<EventReceiver> registeredEventReceivers = registry.get(eventType);
+            if (registeredEventReceivers == null) {
+                registry.putIfAbsent(eventType, new CopyOnWriteArraySet<>());
+                registeredEventReceivers = registry.get(eventType);
+            }
+            registeredEventReceivers.addAll(eventReceivers);
+        }
+        return true;
     }
 
     /**
      * 注销已注册的事件接受器
      * 保证后续调度时，不在触发该事件接收器定义的事件
      *
-     * @param target
+     * @param receiver
      * @return
      */
     @Override
-    public boolean unregister(Object target) {
+    public boolean unregister(Object receiver) {
         //todo unregister
         return false;
     }
 
 
-    private Set<MethodInfo> getMethods(Class<?> targetClass) {
-        return methodHunter.huntingMethods(this, targetClass);
+    private Map<Class<?>, Collection<EventReceiver>> findAllEventReceiver(Object receiver) {
+        Map<Class<?>, Collection<EventReceiver>> receivers = new HashMap<>();
+        Class<?> clazz = receiver.getClass();
+        Set<Method> methods = methodHunter.huntingMethods(clazz);
+        for (Method method : methods) {
+            Class<?>[] parameterTypes = method.getParameterTypes();
+            Class<?> eventType = parameterTypes[0];
+            if (!receivers.containsKey(eventType)) {
+                receivers.put(eventType, new ArrayList<>());
+            }
+            receivers.get(eventType).add(new EventReceiver(new MethodInfo(method, receiver.getClass()), receiver));
+        }
+        return receivers;
     }
+
 
 }

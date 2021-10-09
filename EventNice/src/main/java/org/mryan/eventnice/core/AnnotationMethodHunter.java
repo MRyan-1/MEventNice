@@ -1,8 +1,10 @@
 package org.mryan.eventnice.core;
 
-import java.lang.annotation.Annotation;
+import org.mryan.eventnice.annotation.EventReceive;
+import org.mryan.eventnice.exception.EventException;
+
 import java.lang.reflect.Method;
-import java.util.List;
+import java.util.HashSet;
 import java.util.Set;
 
 /**
@@ -12,15 +14,27 @@ import java.util.Set;
  */
 public class AnnotationMethodHunter implements MethodHunter {
 
+
     /**
      * 捕获指定的class里面使用了Annotation注解的方法
      *
-     * @param type
-     * @param annotation
+     * @param clazz
      * @return
      */
     @Override
-    public Set<MethodInfo> huntingMethods(Object target, Class<?> targetClass) {
-        return null;
+    public Set<Method> huntingMethods(Class<?> clazz) {
+        Set<Method> annotatedMethods = new HashSet<>();
+        for (Method method : clazz.getDeclaredMethods()) {
+            if (method.isAnnotationPresent(EventReceive.class)) {
+                Class<?>[] parameterTypes = method.getParameterTypes();
+                if (parameterTypes.length != 1) {
+                    throw new EventException(String.format(
+                            "Method %s has @EventReceive annotation but has %s parameters." + "Subscriber methods must have exactly 1 parameter.",
+                            method, parameterTypes.length));
+                }
+                annotatedMethods.add(method);
+            }
+        }
+        return annotatedMethods;
     }
 }
