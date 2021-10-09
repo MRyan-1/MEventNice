@@ -1,5 +1,7 @@
 package org.mryan.eventnice.core;
 
+import java.util.Set;
+
 /**
  * @description： 事件总线上下文
  * @Author MRyan
@@ -22,6 +24,7 @@ public class EventContext {
      * 标识
      */
     private final String identifier;
+
 
     public EventContext() {
         this("default");
@@ -74,4 +77,5 @@ public class EventContext {
     public String getIdentifier() {
         return identifier;
     }
+
 }

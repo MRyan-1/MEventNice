@@ -1,8 +1,6 @@
 package org.mryan.eventnice.core;
 
-import java.lang.annotation.Annotation;
-import java.lang.reflect.Method;
-import java.util.List;
+import java.util.Set;
 
 /**
  * @description： method捕猎者
@@ -13,13 +11,13 @@ import java.util.List;
 public interface MethodHunter {
 
     /**
-     * 捕获指定的class里面使用了Annotation注解的方法
+     * 捕获指定方法
      *
      * @param type
      * @param annotation
      * @return
      */
-    List<Method> huntingAnnotatedMethods(final Class<?> type,
-                                         final Class<? extends Annotation> annotation);
+    Set<MethodInfo> huntingMethods(final Object target,
+                                   final Class<?> targetClass);
 
 }

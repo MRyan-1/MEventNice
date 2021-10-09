@@ -3,6 +3,7 @@ package org.mryan.eventnice.core;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 import java.util.List;
+import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.CopyOnWriteArraySet;
@@ -13,10 +14,15 @@ import java.util.concurrent.CopyOnWriteArraySet;
  * @Date 2021/10/8 23:38
  * @Version 1.0
  */
-public class ReceiverRegistry implements Registry, MethodHunter {
+public class ReceiverRegistry implements Registry {
+
 
     private final ConcurrentMap<Class<?>, CopyOnWriteArraySet<EventReceiver>> eventReceivers = new ConcurrentHashMap<>();
 
+    /**
+     * method捕猎者
+     */
+    private MethodHunter methodHunter;
 
     public ReceiverRegistry() {
     }
@@ -50,8 +56,8 @@ public class ReceiverRegistry implements Registry, MethodHunter {
     }
 
 
-    @Override
-    public List<Method> huntingAnnotatedMethods(Class<?> type, Class<? extends Annotation> annotation) {
-        return null;
+    private Set<MethodInfo> getMethods(Class<?> targetClass) {
+        return methodHunter.huntingMethods(this, targetClass);
     }
+
 }
