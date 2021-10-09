@@ -6,7 +6,7 @@ package org.mryan.eventnice.core;
  * @Date 2021/10/8 23:37
  * @Version 1.0
  */
-public class AsyncEventContext {
+public class AsyncEventContext extends EventContext {
 
 
 }

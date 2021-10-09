@@ -11,24 +11,27 @@ public class EventContext {
     /**
      * 事件调度器
      */
-    private EventDispatcher dispatcher;
+    private final EventDispatcher dispatcher;
 
     /**
      * 事件接收器注册中心
      */
-    private ReceiverRegistry registry;
+    private final ReceiverRegistry registry;
 
     /**
      * 标识
      */
-    private String identifier;
+    private final String identifier;
 
     public EventContext() {
         this("default");
     }
 
     public EventContext(String identifier) {
-        this(identifier, EventDispatcher.perDefaultEventDispatcher(), new ReceiverRegistry());
+        this(identifier,
+                EventDispatcher.perDefaultEventDispatcher(),
+                new ReceiverRegistry()
+        );
     }
 
 
@@ -48,7 +51,9 @@ public class EventContext {
     }
 
     /**
-     * 注册所有事件接收方 以接受事件
+     * register event target
+     * 注册事件接收器的目标对象
+     * 保证后续调度时 可以触发该事件接收器定义的事件
      *
      * @param listener
      */
@@ -57,7 +62,8 @@ public class EventContext {
     }
 
     /**
-     * 注销已注册的事件接受方
+     * 注销已注册的事件接受器
+     * 保证后续调度时，不在触发该事件接收器定义的事件
      *
      * @param listener
      */

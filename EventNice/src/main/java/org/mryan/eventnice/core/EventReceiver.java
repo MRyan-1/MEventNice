@@ -3,7 +3,7 @@ package org.mryan.eventnice.core;
 import java.lang.reflect.InvocationTargetException;
 
 /**
- * @description： 事件接收方
+ * @description： 事件接收器
  * @Author MRyan
  * @Date 2021/10/9 00:10
  * @Version 1.0

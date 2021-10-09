@@ -1,5 +1,6 @@
 package org.mryan.eventnicetest.test;
 
+import com.sun.org.apache.xpath.internal.operations.String;
 import org.junit.Test;
 import org.mryan.eventnice.core.EventContext;
 
@@ -13,11 +14,11 @@ import org.mryan.eventnice.core.EventContext;
 public class EventContextTest {
 
     @Test
-    public void TEST_EVENT_CONTEXT_INSTANTIATE() {
+    public void TEST_BASE_EVENT_CONTEXT_INSTANTIATE() {
         EventContext context = new EventContext("This is a test case.");
         context.post(new Object());
         System.out.println(context.getIdentifier());
-
+        context.register(new String());
     }
 
 }

@@ -10,6 +10,7 @@ public abstract class EventDispatcher {
 
     /**
      * Posts an event to all registered subscribers
+     * 为调用注册当前事件的接收器方法 发送事件
      *
      * @param target
      */

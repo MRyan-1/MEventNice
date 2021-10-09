@@ -10,6 +10,8 @@ public interface Registry {
 
     /**
      * register event target
+     * 注册事件接收器的目标对象
+     * 保证后续调度时 可以触发事件接收器定义的事件
      *
      * @param target
      * @return
@@ -18,6 +20,7 @@ public interface Registry {
 
     /**
      * unregister event target
+     * 调用此方法后，不会再给当前对象发送任何事件
      *
      * @param target
      * @return
