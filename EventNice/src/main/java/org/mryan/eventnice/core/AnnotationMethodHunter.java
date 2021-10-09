@@ -4,15 +4,15 @@ import org.mryan.eventnice.annotation.EventReceive;
 import org.mryan.eventnice.exception.EventException;
 
 import java.lang.reflect.Method;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
+import java.util.concurrent.CopyOnWriteArraySet;
 
 /**
  * @description： method捕猎者
  * @Author MRyan
  * @Date 2021/10/9 17:57
  */
-public class AnnotationMethodHunter implements MethodHunter {
+public class AnnotationMethodHunter implements Hunter {
 
 
     /**
@@ -36,5 +36,26 @@ public class AnnotationMethodHunter implements MethodHunter {
             }
         }
         return annotatedMethods;
+    }
+
+    /**
+     * 捕获指定匹配事件接收器
+     *
+     * @param registry 事件接收器注册中心
+     * @param event
+     * @return
+     */
+    @Override
+    public List<EventReceiver> huntingMatchedEventReceivers(ReceiverRegistry registry, Object event) {
+        List<EventReceiver> matchReceivers = new ArrayList<>();
+        Class<?> postedEventType = event.getClass();
+        for (Map.Entry<Class<?>, CopyOnWriteArraySet<EventReceiver>> entry : registry.getRegistry().entrySet()) {
+            Class<?> eventType = entry.getKey();
+            CopyOnWriteArraySet<EventReceiver> eventReceivers = entry.getValue();
+            if (postedEventType.isAssignableFrom(eventType)) {
+                matchReceivers.addAll(eventReceivers);
+            }
+        }
+        return matchReceivers;
     }
 }

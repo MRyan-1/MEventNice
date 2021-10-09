@@ -1,6 +1,7 @@
 package org.mryan.eventnice.core;
 
-import java.lang.reflect.InvocationTargetException;
+import java.util.concurrent.Executor;
+import java.util.concurrent.Executors;
 
 /**
  * @description： 事件总线上下文
@@ -9,6 +10,11 @@ import java.lang.reflect.InvocationTargetException;
  * @Version 1.0
  */
 public class EventContext {
+
+    /**
+     * 执行器
+     */
+    private Executor executor;
 
     /**
      * 事件调度器
@@ -32,7 +38,7 @@ public class EventContext {
 
     public EventContext(String identifier) {
         this(identifier,
-                EventDispatcher.perDefaultEventDispatcher(),
+                EventDispatcher.perDefaultEventDispatcher(Executors.newSingleThreadExecutor()),
                 new ReceiverRegistry()
         );
     }
@@ -44,13 +50,20 @@ public class EventContext {
         this.registry = registry;
     }
 
+    public EventContext(String identifier, EventDispatcher dispatcher, Executor executor, ReceiverRegistry registry) {
+        this.identifier = identifier;
+        this.dispatcher = dispatcher;
+        this.executor = executor;
+        this.registry = registry;
+    }
+
     /**
      * 事件调度，向所有已注册的事件接收方发送消息通知
      *
      * @param event
      */
     public void post(Object event) {
-        dispatcher.post(event);
+        dispatcher.post(event, registry);
     }
 
     /**
@@ -74,8 +87,14 @@ public class EventContext {
         registry.unregister(listener);
     }
 
+
     public String getIdentifier() {
         return identifier;
+    }
+
+
+    public Executor getExecutor() {
+        return executor;
     }
 
 }

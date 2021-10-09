@@ -1,6 +1,5 @@
 package org.mryan.eventnice.core;
 
-import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
@@ -21,7 +20,7 @@ public class ReceiverRegistry implements Registry {
     /**
      * method捕猎者
      */
-    private final MethodHunter methodHunter;
+    private final Hunter methodHunter;
 
     public ReceiverRegistry() {
         this.methodHunter = new AnnotationMethodHunter();
@@ -82,4 +81,11 @@ public class ReceiverRegistry implements Registry {
     }
 
 
+    public List<EventReceiver> huntingMatchedEventReceivers(Object event) {
+        return methodHunter.huntingMatchedEventReceivers(this, event);
+    }
+
+    public ConcurrentMap<Class<?>, CopyOnWriteArraySet<EventReceiver>> getRegistry() {
+        return registry;
+    }
 }

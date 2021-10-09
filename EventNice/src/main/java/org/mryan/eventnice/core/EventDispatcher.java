@@ -1,5 +1,7 @@
 package org.mryan.eventnice.core;
 
+import java.util.concurrent.Executor;
+
 /**
  * @description： 事件调度器
  * @Author MRyan
@@ -8,20 +10,21 @@ package org.mryan.eventnice.core;
  */
 public abstract class EventDispatcher {
 
+
     /**
      * Posts an event to all registered subscribers
      * 为调用注册当前事件的接收器方法 发送事件
      *
      * @param target
      */
-    public abstract void post(Object target);
+    public abstract void post(Object target, ReceiverRegistry registry);
 
     /**
      * 生成默认的事件调度器
      *
      * @return
      */
-    static EventDispatcher perDefaultEventDispatcher() {
-        return new DefaultEventDispatcher();
+    static EventDispatcher perDefaultEventDispatcher(Executor executor) {
+        return new DefaultEventDispatcher(executor);
     }
 }

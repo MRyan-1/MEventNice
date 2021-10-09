@@ -3,8 +3,8 @@ package org.mryan.eventnicetest.test;
 import org.junit.Test;
 import org.mryan.eventnice.core.EventContext;
 import org.mryan.eventnicetest.test.event.IntegerListener;
-
-import java.lang.reflect.InvocationTargetException;
+import org.mryan.eventnicetest.test.event.NumberListener;
+import org.mryan.eventnicetest.test.event.StringListener;
 
 
 /**
@@ -19,6 +19,15 @@ public class EventContextTest {
     public void TEST_BASE_EVENT_CONTEXT_INSTANTIATE() {
         EventContext context = new EventContext("This is a test case.");
         context.register(new IntegerListener());
+        context.register(new NumberListener());
+        context.post(1);
+    }
+
+    @Test
+    public void TEST_BASE_EVENT_String() {
+        EventContext context = new EventContext();
+        context.register(new StringListener());
+        context.post("This is a test case.");
     }
 
 }
