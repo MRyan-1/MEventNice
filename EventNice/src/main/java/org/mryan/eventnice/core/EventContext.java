@@ -1,6 +1,5 @@
 package org.mryan.eventnice.core;
 
-import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
 
 /**
@@ -11,10 +10,6 @@ import java.util.concurrent.Executors;
  */
 public class EventContext {
 
-    /**
-     * 执行器
-     */
-    private Executor executor;
 
     /**
      * 事件调度器
@@ -50,12 +45,6 @@ public class EventContext {
         this.registry = registry;
     }
 
-    public EventContext(String identifier, EventDispatcher dispatcher, Executor executor, ReceiverRegistry registry) {
-        this.identifier = identifier;
-        this.dispatcher = dispatcher;
-        this.executor = executor;
-        this.registry = registry;
-    }
 
     /**
      * 事件调度，向所有已注册的事件接收方发送消息通知
@@ -92,9 +81,5 @@ public class EventContext {
         return identifier;
     }
 
-
-    public Executor getExecutor() {
-        return executor;
-    }
 
 }
