@@ -24,9 +24,18 @@ public class EventContextTest {
     }
 
     @Test
-    public void TEST_BASE_EVENT_String() {
+    public void TEST_BASE_EVENT_STRING() {
         EventContext context = new EventContext();
         context.register(new StringListener());
+        context.post("This is a test case.");
+    }
+
+    @Test
+    public void TEST_BASE_EVENT_UNREGISTER() {
+        EventContext context = new EventContext();
+        StringListener listener = new StringListener();
+        context.register(listener);
+        context.unregister(listener);
         context.post("This is a test case.");
     }
 

@@ -1,11 +1,13 @@
 package org.mryan.eventnice.core;
 
 import java.lang.reflect.Method;
+import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 /**
- * @description： method捕猎者
+ * @description： 捕猎者
  * @Author MRyan
  * @Date 2021/10/8 23:59
  * @Version 1.0
@@ -28,4 +30,13 @@ public interface Hunter {
      * @return
      */
     List<EventReceiver> huntingMatchedEventReceivers(ReceiverRegistry registry, Object event);
+
+    /**
+     * 捕获当前EventReceive所有事件接收器
+     *
+     * @param receiver
+     * @return
+     */
+    Map<Class<?>, Collection<EventReceiver>> huntingAllEventReceiver(Object receiver);
+
 }

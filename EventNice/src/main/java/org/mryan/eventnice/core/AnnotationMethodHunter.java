@@ -58,4 +58,27 @@ public class AnnotationMethodHunter implements Hunter {
         }
         return matchReceivers;
     }
+
+    /**
+     * 捕获当前EventReceive所有事件接收器
+     *
+     * @param receiver
+     * @return
+     */
+    @Override
+    public Map<Class<?>, Collection<EventReceiver>> huntingAllEventReceiver(Object receiver) {
+        Map<Class<?>, Collection<EventReceiver>> receivers = new HashMap<>();
+        Class<?> clazz = receiver.getClass();
+        Set<Method> methods = this.huntingMethods(clazz);
+        for (Method method : methods) {
+            Class<?>[] parameterTypes = method.getParameterTypes();
+            Class<?> eventType = parameterTypes[0];
+            if (!receivers.containsKey(eventType)) {
+                receivers.put(eventType, new ArrayList<>());
+            }
+            receivers.get(eventType).add(new EventReceiver(new MethodInfo(method, receiver.getClass()), receiver));
+        }
+        return receivers;
+    }
+
 }

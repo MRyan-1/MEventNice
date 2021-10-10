@@ -1,7 +1,8 @@
 package org.mryan.eventnice.core;
 
-import java.lang.reflect.Method;
-import java.util.*;
+import java.util.Collection;
+import java.util.List;
+import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.CopyOnWriteArraySet;
@@ -37,7 +38,7 @@ public class ReceiverRegistry implements Registry {
      */
     @Override
     public boolean register(Object receiver) {
-        Map<Class<?>, Collection<EventReceiver>> receivers = findAllEventReceiver(receiver);
+        Map<Class<?>, Collection<EventReceiver>> receivers = huntingAllEventReceiver(receiver);
         for (Map.Entry<Class<?>, Collection<EventReceiver>> entry : receivers.entrySet()) {
             Class<?> eventType = entry.getKey();
             Collection<EventReceiver> eventReceivers = entry.getValue();
@@ -60,27 +61,33 @@ public class ReceiverRegistry implements Registry {
      */
     @Override
     public boolean unregister(Object receiver) {
-        //todo unregister
-        return false;
-    }
-
-
-    private Map<Class<?>, Collection<EventReceiver>> findAllEventReceiver(Object receiver) {
-        Map<Class<?>, Collection<EventReceiver>> receivers = new HashMap<>();
-        Class<?> clazz = receiver.getClass();
-        Set<Method> methods = methodHunter.huntingMethods(clazz);
-        for (Method method : methods) {
-            Class<?>[] parameterTypes = method.getParameterTypes();
-            Class<?> eventType = parameterTypes[0];
-            if (!receivers.containsKey(eventType)) {
-                receivers.put(eventType, new ArrayList<>());
+        Map<Class<?>, Collection<EventReceiver>> receivers = huntingAllEventReceiver(receiver);
+        for (Map.Entry<Class<?>, Collection<EventReceiver>> entry : receivers.entrySet()) {
+            Class<?> eventType = entry.getKey();
+            if (registry.get(eventType) != null) {
+                registry.remove(eventType);
             }
-            receivers.get(eventType).add(new EventReceiver(new MethodInfo(method, receiver.getClass()), receiver));
         }
-        return receivers;
+        return true;
     }
 
 
+    /**
+     * 捕获当前EventReceive所有事件接收器
+     *
+     * @param receiver
+     * @return
+     */
+    private Map<Class<?>, Collection<EventReceiver>> huntingAllEventReceiver(Object receiver) {
+        return methodHunter.huntingAllEventReceiver(receiver);
+    }
+
+    /**
+     * 捕获指定匹配事件接收器
+     *
+     * @param event
+     * @return
+     */
     public List<EventReceiver> huntingMatchedEventReceivers(Object event) {
         return methodHunter.huntingMatchedEventReceivers(this, event);
     }
