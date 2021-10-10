@@ -64,9 +64,11 @@ public class ReceiverRegistry implements Registry {
         Map<Class<?>, Collection<EventReceiver>> receivers = huntingAllEventReceiver(receiver);
         for (Map.Entry<Class<?>, Collection<EventReceiver>> entry : receivers.entrySet()) {
             Class<?> eventType = entry.getKey();
-            if (registry.get(eventType) != null) {
-                registry.remove(eventType);
+            if (registry.get(eventType) == null) {
+                throw new IllegalArgumentException(
+                        "missing event subscriber for an annotated method. Is " + receiver + " registered?");
             }
+            registry.remove(eventType);
         }
         return true;
     }

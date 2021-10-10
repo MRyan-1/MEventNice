@@ -19,12 +19,16 @@ public class MethodHelper {
      * @return
      */
     public static boolean isConditionMethod(Method method) {
+        Class<?>[] parameterTypes = method.getParameterTypes();
         //过滤非@EventReceive注解标识方法
-        if (!method.isAnnotationPresent(EventReceive.class)) {
+        if (!method.isAnnotationPresent(EventReceive.class) && !method.isSynthetic()) {
             return true;
         }
         //过滤非public方法
         if (!Modifier.isPublic(method.getModifiers())) {
+            return true;
+        }
+        if (parameterTypes[0].isPrimitive()) {
             return true;
         }
         //过滤volatile方法，修复Java编译器自动添加bridge方法造成的方法重复的问题

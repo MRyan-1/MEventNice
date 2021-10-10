@@ -3,7 +3,6 @@ package org.mryan.eventnice.core;
 import org.mryan.eventnice.utils.LoggerUtils;
 import org.slf4j.LoggerFactory;
 
-import java.lang.reflect.InvocationTargetException;
 import java.util.List;
 import java.util.concurrent.Executor;
 
@@ -35,13 +34,15 @@ public class DefaultEventDispatcher extends EventDispatcher {
         List<EventReceiver> eventReceivers = registry.huntingMatchedEventReceivers(event);
         for (EventReceiver eventReceiver : eventReceivers) {
             //匹配事件 在进行调度，同一个事件接收器中匹配多个EventReceiver 进行事件调度时所属event若不同并不会调度给所有EventReceiver执行事件 避免执行异常
-            executor.execute(() -> {
-                try {
-                    eventReceiver.execute(event);
-                } catch (Exception e) {
-                    LoggerUtils.error(LoggerFactory.getLogger(getClass()), "error: " + event, e);
-                }
-            });
+            if (eventReceiver.methodInfo.getMethod().getParameterTypes()[0].equals(event.getClass())) {
+                executor.execute(() -> {
+                    try {
+                        eventReceiver.execute(event);
+                    } catch (Exception e) {
+                        LoggerUtils.error(LoggerFactory.getLogger(getClass()), "error: " + event, e);
+                    }
+                });
+            }
         }
     }
 
