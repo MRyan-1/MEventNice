@@ -1,4 +1,4 @@
-package org.mryan.eventnicetest.test.event;
+package org.mryan.eventnicetest.test.listener;
 
 import org.mryan.eventnice.annotation.EventReceive;
 
@@ -10,10 +10,10 @@ import org.mryan.eventnice.annotation.EventReceive;
  */
 public class StringListener {
 
-    private String lastMessage;
+    private static String lastMessage;
 
     @EventReceive
-    public void listen(String str) {
+    public static void listen(String str) {
         lastMessage = str;
         System.out.println("Integer Message:" + lastMessage);
     }

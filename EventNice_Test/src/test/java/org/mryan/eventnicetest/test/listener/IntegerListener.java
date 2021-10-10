@@ -1,4 +1,4 @@
-package org.mryan.eventnicetest.test.event;
+package org.mryan.eventnicetest.test.listener;
 
 import org.mryan.eventnice.annotation.EventReceive;
 
