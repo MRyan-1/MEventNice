@@ -25,22 +25,46 @@ public class AnnotationMethodHunter implements Hunter {
     @Override
     public Set<Method> huntingMethods(Class<?> clazz) {
         Set<Method> annotatedMethods = new HashSet<>();
-        for (Method method : clazz.getDeclaredMethods()) {
-            if (!method.isAnnotationPresent(EventReceive.class)) {
-                continue;
+        while (!shouldSkipClass(clazz)) {
+            Method[] methods = clazz.getDeclaredMethods();
+            for (Method method : methods) {
+                //过滤非@EventReceive注解标识方法
+                if (!method.isAnnotationPresent(EventReceive.class)) {
+                    continue;
+                }
+                //过滤非public方法
+                if (!Modifier.isPublic(method.getModifiers())) {
+                    continue;
+                }
+                //过滤volatile方法，修复Java编译器自动添加bridge方法造成的方法重复的问题
+                if (Modifier.isVolatile(method.getModifiers())) {
+                    continue;
+                }
+                Class<?>[] parameterTypes = method.getParameterTypes();
+                if (parameterTypes.length != 1) {
+                    throw new EventException(String.format(
+                            "Method %s has @EventReceive annotation but has %s parameters." + "Subscriber methods must have exactly 1 parameter.",
+                            method, parameterTypes.length));
+                }
+                annotatedMethods.add(method);
             }
-            if (!Modifier.isPublic(method.getModifiers())) {
-                continue;
-            }
-            Class<?>[] parameterTypes = method.getParameterTypes();
-            if (parameterTypes.length != 1) {
-                throw new EventException(String.format(
-                        "Method %s has @EventReceive annotation but has %s parameters." + "Subscriber methods must have exactly 1 parameter.",
-                        method, parameterTypes.length));
-            }
-            annotatedMethods.add(method);
+            //递归查找父类 支持hierarchy
+            clazz = clazz.getSuperclass();
         }
         return annotatedMethods;
+    }
+
+    /**
+     * 过滤条件，大幅提高父类查找的效率，减少不必要的遍历
+     *
+     * @param clazz
+     * @return
+     */
+    private boolean shouldSkipClass(final Class<?> clazz) {
+        final String clsName = clazz.getName();
+        return Object.class.equals(clazz)
+                || clsName.startsWith("java.")
+                || clsName.startsWith("javax.");
     }
 
     /**

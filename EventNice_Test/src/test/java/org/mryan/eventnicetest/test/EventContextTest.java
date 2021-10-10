@@ -2,7 +2,7 @@ package org.mryan.eventnicetest.test;
 
 import org.junit.Test;
 import org.mryan.eventnice.core.EventContext;
-import org.mryan.eventnicetest.test.event.*;
+import org.mryan.eventnicetest.test.event.MyEvent;
 import org.mryan.eventnicetest.test.event.hierarchy.Apple;
 import org.mryan.eventnicetest.test.event.hierarchy.Fruit;
 import org.mryan.eventnicetest.test.listener.IntegerListener;
