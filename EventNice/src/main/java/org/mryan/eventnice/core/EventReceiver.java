@@ -1,6 +1,11 @@
 package org.mryan.eventnice.core;
 
+import org.mryan.eventnice.utils.LoggerUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 
 /**
  * @description： 事件接收器
@@ -44,8 +49,24 @@ public class EventReceiver {
         this.name = methodInfo.getName();
     }
 
-    public Object invoke(Object event) throws InvocationTargetException, IllegalAccessException {
-        return this.methodInfo.getMethod().invoke(this.target, event);
+    public Object execute(Object event) throws InvocationTargetException {
+        try {
+            Method method = this.methodInfo.getMethod();
+            method.setAccessible(true);
+            return method.invoke(this.target, event);
+        } catch (IllegalArgumentException e) {
+            //todo 异常被吃掉了 需解决 下方同理
+            LoggerUtils.error(LoggerFactory.getLogger(getClass()), "Method rejected target/argument:" + event, e);
+            return null;
+        } catch (IllegalAccessException e) {
+            LoggerUtils.error(LoggerFactory.getLogger(getClass()), "Method became inaccessible: " + event, e);
+            return null;
+        } catch (InvocationTargetException e) {
+            if (e.getCause() instanceof Error) {
+                throw (Error) e.getCause();
+            }
+            throw e;
+        }
     }
 
     @Override

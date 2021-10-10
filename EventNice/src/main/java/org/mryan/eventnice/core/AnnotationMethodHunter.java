@@ -80,7 +80,7 @@ public class AnnotationMethodHunter implements Hunter {
             if (!receivers.containsKey(eventType)) {
                 receivers.put(eventType, new ArrayList<>());
             }
-            receivers.get(eventType).add(new EventReceiver(new MethodInfo(method, receiver.getClass()), receiver));
+            receivers.get(eventType).add(new EventReceiver(new MethodInfo(method, method.getClass()), receiver));
         }
         return receivers;
     }

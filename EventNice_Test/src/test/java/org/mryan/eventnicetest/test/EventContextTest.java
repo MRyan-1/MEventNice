@@ -2,6 +2,7 @@ package org.mryan.eventnicetest.test;
 
 import org.junit.Test;
 import org.mryan.eventnice.core.EventContext;
+import org.mryan.eventnice.utils.LoggerUtils;
 import org.mryan.eventnicetest.test.event.MyEvent;
 import org.mryan.eventnicetest.test.event.hierarchy.Apple;
 import org.mryan.eventnicetest.test.event.hierarchy.Fruit;
@@ -11,6 +12,7 @@ import org.mryan.eventnicetest.test.listener.NumberListener;
 import org.mryan.eventnicetest.test.listener.StringListener;
 import org.mryan.eventnicetest.test.listener.hierarchy.FruitEaterListener;
 import org.mryan.eventnicetest.test.listener.hierarchy.ListenerHierarchy;
+import org.slf4j.LoggerFactory;
 
 import java.util.concurrent.CountDownLatch;
 
@@ -76,7 +78,6 @@ public class EventContextTest {
      * Once an event is published, all the @EventReceive annotated methods in the listener’s hierarchy will be notified.
      */
     @Test
-    //todo 待实现
     public void LISTENER_HIERARCHY_EVENT_RECEIVER_EXAMPLE() {
         EventContext context = new EventContext();
         context.register(new ListenerHierarchy());
@@ -89,7 +90,6 @@ public class EventContextTest {
      * In the below example, the FruitEaterListener contains a subscriber method called eat. It can eat generic fruit as well as specific fruit ‘Apple’. If an ‘Apple’ is published, first eat(Apple) gets notified and then eat(Fruit)
      */
     @Test
-    //todo 待实现
     public void EVENT_HIERARCHY_EVENT_RECEIVER_EXAMPLE() {
         EventContext context = new EventContext();
         context.register(new FruitEaterListener());

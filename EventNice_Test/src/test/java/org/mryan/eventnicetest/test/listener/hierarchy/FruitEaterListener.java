@@ -1,6 +1,7 @@
 package org.mryan.eventnicetest.test.listener.hierarchy;
 
 import org.mryan.eventnice.annotation.EventReceive;
+import org.mryan.eventnicetest.test.event.MyEvent;
 import org.mryan.eventnicetest.test.event.hierarchy.Apple;
 import org.mryan.eventnicetest.test.event.hierarchy.Fruit;
 
