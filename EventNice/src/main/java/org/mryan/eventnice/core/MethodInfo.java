@@ -54,4 +54,14 @@ public class MethodInfo {
     public int hashCode() {
         return name.hashCode();
     }
+
+    @Override
+    public String toString() {
+        return "MethodInfo{" +
+                "method=" + method +
+                ", targetClass=" + targetClass +
+                ", eventType=" + eventType +
+                ", name='" + name + '\'' +
+                '}';
+    }
 }
