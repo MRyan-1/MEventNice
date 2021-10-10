@@ -16,10 +16,22 @@
     <properties>
         <maven.compiler.source>8</maven.compiler.source>
         <maven.compiler.target>8</maven.compiler.target>
+        <junit.version>4.13.2</junit.version>
     </properties>
 
     <dependencies>
-
+        <!--junit-->
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <version>${junit.version}</version>
+        </dependency>
+        <!--引用模块-->
+        <dependency>
+            <groupId>org.mryan.meventnice</groupId>
+            <artifactId>EventNice</artifactId>
+            <version>1.0-SNAPSHOT</version>
+        </dependency>
     </dependencies>
 
 </project>
