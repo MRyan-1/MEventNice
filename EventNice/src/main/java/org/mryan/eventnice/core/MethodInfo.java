@@ -21,7 +21,7 @@ public class MethodInfo {
     public MethodInfo(final Method method, final Class<?> targetClass) {
         this.method = method;
         this.targetClass = targetClass;
-        this.eventType = method.getParameterTypes()[0];
+        this.eventType = targetClass;
         this.name = targetClass.getName() + "." + method.getName() + "(" + eventType.getName() + ")";
     }
 
@@ -53,5 +53,15 @@ public class MethodInfo {
     @Override
     public int hashCode() {
         return name.hashCode();
+    }
+
+    @Override
+    public String toString() {
+        return "MethodInfo{" +
+                "method=" + method +
+                ", targetClass=" + targetClass +
+                ", eventType=" + eventType +
+                ", name='" + name + '\'' +
+                '}';
     }
 }

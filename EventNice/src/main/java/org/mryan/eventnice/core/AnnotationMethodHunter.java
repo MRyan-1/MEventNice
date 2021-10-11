@@ -1,10 +1,9 @@
 package org.mryan.eventnice.core;
 
-import org.mryan.eventnice.annotation.EventReceive;
 import org.mryan.eventnice.exception.EventException;
+import org.mryan.eventnice.utils.MethodHelper;
 
 import java.lang.reflect.Method;
-import java.lang.reflect.Modifier;
 import java.util.*;
 import java.util.concurrent.CopyOnWriteArraySet;
 
@@ -13,8 +12,7 @@ import java.util.concurrent.CopyOnWriteArraySet;
  * @Author MRyan
  * @Date 2021/10/9 17:57
  */
-public class AnnotationMethodHunter implements Hunter {
-
+public class AnnotationMethodHunter extends Hunter {
 
     /**
      * 捕获指定的class里面使用了Annotation注解的方法
@@ -23,25 +21,30 @@ public class AnnotationMethodHunter implements Hunter {
      * @return
      */
     @Override
-    public Set<Method> huntingMethods(Class<?> clazz) {
-        Set<Method> annotatedMethods = new HashSet<>();
-        for (Method method : clazz.getDeclaredMethods()) {
-            if (!method.isAnnotationPresent(EventReceive.class)) {
-                continue;
+    public Map<Class<?>, Set<Method>> huntingMethods(Class<?> clazz) {
+        Map<Class<?>, Set<Method>> methodMap = new HashMap<>();
+        while (!MethodHelper.shouldSkipClass(clazz)) {
+            Method[] methods = clazz.getDeclaredMethods();
+            for (Method method : methods) {
+                if (MethodHelper.isConditionMethod(method)) continue;
+                Class<?>[] parameterTypes = method.getParameterTypes();
+                if (parameterTypes.length != 1) {
+                    throw new EventException(String.format(
+                            "Method %s has @EventReceive annotation but has %s parameters." + "Subscriber methods must have exactly 1 parameter.",
+                            method, parameterTypes.length));
+                }
+                Class<?> parameterType = parameterTypes[0];
+                if (!methodMap.containsKey(parameterType)) {
+                    methodMap.put(parameterType, new HashSet<>());
+                }
+                methodMap.get(parameterType).add(method);
             }
-            if (!Modifier.isPublic(method.getModifiers())) {
-                continue;
-            }
-            Class<?>[] parameterTypes = method.getParameterTypes();
-            if (parameterTypes.length != 1) {
-                throw new EventException(String.format(
-                        "Method %s has @EventReceive annotation but has %s parameters." + "Subscriber methods must have exactly 1 parameter.",
-                        method, parameterTypes.length));
-            }
-            annotatedMethods.add(method);
+            //递归查找父类 支持hierarchy
+            clazz = clazz.getSuperclass();
         }
-        return annotatedMethods;
+        return methodMap;
     }
+
 
     /**
      * 捕获指定匹配事件接收器
@@ -51,17 +54,9 @@ public class AnnotationMethodHunter implements Hunter {
      * @return
      */
     @Override
-    public List<EventReceiver> huntingMatchedEventReceivers(ReceiverRegistry registry, Object event) {
-        List<EventReceiver> matchReceivers = new ArrayList<>();
+    public CopyOnWriteArraySet<EventReceiver> huntingMatchedEventReceivers(ReceiverRegistry registry, Object event) {
         Class<?> postedEventType = event.getClass();
-        for (Map.Entry<Class<?>, CopyOnWriteArraySet<EventReceiver>> entry : registry.getRegistry().entrySet()) {
-            Class<?> eventType = entry.getKey();
-            CopyOnWriteArraySet<EventReceiver> eventReceivers = entry.getValue();
-            if (postedEventType.isAssignableFrom(eventType)) {
-                matchReceivers.addAll(eventReceivers);
-            }
-        }
-        return matchReceivers;
+        return registry.getRegistry().get(postedEventType);
     }
 
     /**
@@ -74,14 +69,24 @@ public class AnnotationMethodHunter implements Hunter {
     public Map<Class<?>, Collection<EventReceiver>> huntingAllEventReceiver(Object receiver) {
         Map<Class<?>, Collection<EventReceiver>> receivers = new HashMap<>();
         Class<?> clazz = receiver.getClass();
-        Set<Method> methods = this.huntingMethods(clazz);
-        for (Method method : methods) {
-            Class<?>[] parameterTypes = method.getParameterTypes();
-            Class<?> eventType = parameterTypes[0];
-            if (!receivers.containsKey(eventType)) {
-                receivers.put(eventType, new ArrayList<>());
+        Map<Class<?>, Set<Method>> paramMethodMap = this.huntingMethods(clazz);
+        //处理Event多继承实现
+        for (Class<?> paramClass : paramMethodMap.keySet()) {
+            Class<?> targetClazz = paramClass;
+            while (!MethodHelper.shouldSkipClass(targetClazz)) {
+                Set<Method> methods = paramMethodMap.get(targetClazz);
+                if (methods == null) {
+                    continue;
+                }
+                for (Method method : methods) {
+                    if (!receivers.containsKey(paramClass)) {
+                        receivers.put(paramClass, new ArrayList<>());
+                    }
+                    receivers.get(paramClass).add(new EventReceiver(new MethodInfo(method, targetClazz), receiver));
+                }
+                //逐级遍历Event的父类
+                targetClazz = targetClazz.getSuperclass();
             }
-            receivers.get(eventType).add(new EventReceiver(new MethodInfo(method, receiver.getClass()), receiver));
         }
         return receivers;
     }

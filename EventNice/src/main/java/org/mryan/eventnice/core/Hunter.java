@@ -5,6 +5,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.CopyOnWriteArraySet;
 
 /**
  * @description： 捕猎者
@@ -12,7 +13,7 @@ import java.util.Set;
  * @Date 2021/10/8 23:59
  * @Version 1.0
  */
-public interface Hunter {
+public abstract class Hunter {
 
     /**
      * 捕获指定方法
@@ -20,7 +21,7 @@ public interface Hunter {
      * @param clazz
      * @return
      */
-    Set<Method> huntingMethods(Class<?> clazz);
+    abstract Map<Class<?>, Set<Method>> huntingMethods(Class<?> clazz);
 
     /**
      * 捕获指定匹配事件接收器
@@ -29,7 +30,7 @@ public interface Hunter {
      * @param event
      * @return
      */
-    List<EventReceiver> huntingMatchedEventReceivers(ReceiverRegistry registry, Object event);
+    abstract CopyOnWriteArraySet<EventReceiver> huntingMatchedEventReceivers(ReceiverRegistry registry, Object event);
 
     /**
      * 捕获当前EventReceive所有事件接收器
@@ -37,6 +38,6 @@ public interface Hunter {
      * @param receiver
      * @return
      */
-    Map<Class<?>, Collection<EventReceiver>> huntingAllEventReceiver(Object receiver);
+    abstract Map<Class<?>, Collection<EventReceiver>> huntingAllEventReceiver(Object receiver);
 
 }
