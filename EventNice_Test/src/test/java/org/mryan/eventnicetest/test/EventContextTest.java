@@ -40,7 +40,6 @@ public class EventContextTest {
     }
 
     @Test
-    //bug修复
     public void TEST_BASE_EVENT_UNREGISTER() {
         EventContext context = new EventContext();
         StringListener listener = new StringListener();
@@ -50,7 +49,7 @@ public class EventContextTest {
     }
 
     @Test
-    //bug 修复
+    //todo bug 修复
     public void TEST_BASE_EVENT_CUSTOM() {
         EventContext context = new EventContext();
         StringListener listener = new StringListener();
