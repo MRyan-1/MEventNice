@@ -48,7 +48,15 @@ public class EventReceiver {
         this.name = methodInfo.getName();
     }
 
-    public Object execute(EventReceiver eventReceiver, Object event) throws InvocationTargetException, IllegalAccessException {
+    /**
+     * 执行调度
+     *
+     * @param event
+     * @return
+     * @throws InvocationTargetException
+     * @throws IllegalAccessException
+     */
+    public Object execute(Object event) throws InvocationTargetException, IllegalAccessException {
         try {
             Method method = this.methodInfo.getMethod();
             method.setAccessible(true);

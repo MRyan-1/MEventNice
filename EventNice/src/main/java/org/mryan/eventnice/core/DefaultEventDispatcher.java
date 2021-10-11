@@ -3,8 +3,6 @@ package org.mryan.eventnice.core;
 import org.mryan.eventnice.utils.LoggerUtils;
 import org.slf4j.LoggerFactory;
 
-import java.util.List;
-import java.util.Map;
 import java.util.concurrent.CopyOnWriteArraySet;
 import java.util.concurrent.Executor;
 
@@ -44,7 +42,7 @@ public class DefaultEventDispatcher extends EventDispatcher {
             if (eventReceiver.methodInfo.getMethod().getParameterTypes()[0].isAssignableFrom(event.getClass())) {
                 executor.execute(() -> {
                     try {
-                        eventReceiver.execute(eventReceiver, event);
+                        eventReceiver.execute(event);
                     } catch (Exception e) {
                         LoggerUtils.error(LoggerFactory.getLogger(getClass()), "error: " + event, e);
                     }

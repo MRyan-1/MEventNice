@@ -109,4 +109,15 @@ public class EventContextTest {
         }).start();
         countDownLatch.await();
     }
+
+    @Test
+    public void TEST_EVENT_RECEIVER_CONTEXT_INSTANCE() {
+        EventContext context = EventContext.getDefault();
+        EventContext context2 = EventContext.getDefault();
+        context.register(new IntegerListener());
+        context2.register(new MyEventListener());
+        context2.post(1);
+        context.post(new MyEvent("This is a test case."));
+
+    }
 }

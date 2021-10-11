@@ -27,6 +27,25 @@ public class EventContext {
     private final String identifier;
 
 
+    private volatile static EventContext eventContext;
+
+    /**
+     * 默认单例实现
+     *
+     * @return
+     */
+    public static EventContext getDefault() {
+        if (null == eventContext) {
+            synchronized (EventContext.class) {
+                if (null == eventContext) {
+                    eventContext = new EventContext();
+                }
+            }
+        }
+        return eventContext;
+    }
+
+
     public EventContext() {
         this("default");
     }
