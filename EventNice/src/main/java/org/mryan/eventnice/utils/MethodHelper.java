@@ -45,10 +45,7 @@ public class MethodHelper {
      * @return
      */
     public static boolean shouldSkipClass(final Class<?> clazz) {
-        final String clsName = clazz.getName();
-        return Object.class.equals(clazz)
-                || clsName.startsWith("java.")
-                || clsName.startsWith("javax.");
+        return Object.class.equals(clazz) || Number.class.equals(clazz);
     }
 
 }

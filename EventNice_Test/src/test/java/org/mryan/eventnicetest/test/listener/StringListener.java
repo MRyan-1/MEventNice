@@ -15,7 +15,7 @@ public class StringListener {
     @EventReceive
     public static void listen(String str) {
         lastMessage = str;
-        System.out.println("Integer Message:" + lastMessage);
+        System.out.println("StringListener Message:" + lastMessage);
     }
 
     public String getLastMessage() {

@@ -90,7 +90,7 @@ public class ReceiverRegistry implements Registry {
      * @param event
      * @return
      */
-    public List<EventReceiver> huntingMatchedEventReceivers(Object event) {
+    public  CopyOnWriteArraySet<EventReceiver> huntingMatchedEventReceivers(Object event) {
         return methodHunter.huntingMatchedEventReceivers(this, event);
     }
 

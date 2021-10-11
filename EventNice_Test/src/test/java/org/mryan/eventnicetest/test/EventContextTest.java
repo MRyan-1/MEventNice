@@ -5,10 +5,7 @@ import org.mryan.eventnice.core.EventContext;
 import org.mryan.eventnicetest.test.event.MyEvent;
 import org.mryan.eventnicetest.test.event.hierarchy.Apple;
 import org.mryan.eventnicetest.test.event.hierarchy.Fruit;
-import org.mryan.eventnicetest.test.listener.IntegerListener;
-import org.mryan.eventnicetest.test.listener.MultipleListeners;
-import org.mryan.eventnicetest.test.listener.NumberListener;
-import org.mryan.eventnicetest.test.listener.StringListener;
+import org.mryan.eventnicetest.test.listener.*;
 import org.mryan.eventnicetest.test.listener.hierarchy.FruitEaterListener;
 import org.mryan.eventnicetest.test.listener.hierarchy.ListenerHierarchy;
 
@@ -28,8 +25,10 @@ public class EventContextTest {
         EventContext context = new EventContext("This is a test case.");
         context.register(new IntegerListener());
         context.register(new NumberListener());
+        context.register(new LongListener());
         System.out.println("Post Simple EventBus Example");
         context.post(1);
+        context.post(1L);
     }
 
     @Test
@@ -41,6 +40,7 @@ public class EventContextTest {
     }
 
     @Test
+    //bug修复
     public void TEST_BASE_EVENT_UNREGISTER() {
         EventContext context = new EventContext();
         StringListener listener = new StringListener();
@@ -50,6 +50,7 @@ public class EventContextTest {
     }
 
     @Test
+    //bug 修复
     public void TEST_BASE_EVENT_CUSTOM() {
         EventContext context = new EventContext();
         StringListener listener = new StringListener();
@@ -88,7 +89,6 @@ public class EventContextTest {
      * In the below example, the FruitEaterListener contains a subscriber method called eat. It can eat generic fruit as well as specific fruit ‘Apple’. If an ‘Apple’ is published, first eat(Apple) gets notified and then eat(Fruit)
      */
     @Test
-    //todo 未完成
     public void EVENT_HIERARCHY_EVENT_RECEIVER_EXAMPLE() {
         EventContext context = new EventContext();
         context.register(new FruitEaterListener());

@@ -8,17 +8,17 @@ import org.mryan.eventnice.annotation.EventReceive;
  * @Date 2021/10/8 23:00
  * @Version 1.0
  */
-public class NumberListener {
+public class LongListener {
 
-    private Number lastMessage;
+    private Long lastMessage;
 
     @EventReceive
-    public void listen(Number integer) {
+    public void listen(Long integer) {
         lastMessage = integer;
-        System.out.println("NumberListener Message:" + lastMessage);
+        System.out.println("LongListener Message:" + lastMessage);
     }
 
-    public Number getLastMessage() {
+    public Long getLastMessage() {
         return lastMessage;
     }
 }
