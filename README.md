@@ -1,18 +1,26 @@
 # MEventNice
+
 MEventNice is a publish/subscribe event bus for Java.
 
-An event bus designed to decouple different parts of your application while still allowing them to communicate efficiently.
+An event bus designed to decouple different parts of your application while still allowing them to communicate
+efficiently.
 
 ## Task completion
+
 V1.0 completed:
+
 1. 完成捕猎者捕获相关事件接收器
 2. 简单实现事件接收器注册至事件接收器注册中心
 3. 简单实现事件接收器从注册中心注销
 4. 简单实现事件调度器对匹配已注册的事件的接收器方法（事件）的分发
 
+V1.0.1 completed:
 
+1. 实现对Event事件多继承功能支持
+2. 实现对事件接收器多继承功能支持
 
 ## License
+
 ```txt
 Copyright 2021 MRyan
 
