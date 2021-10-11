@@ -2,6 +2,7 @@ package org.mryan.eventnicetest.test.listener.hierarchy;
 
 import org.mryan.eventnice.annotation.EventReceive;
 import org.mryan.eventnicetest.test.event.hierarchy.Apple;
+import org.mryan.eventnicetest.test.event.hierarchy.Banana;
 import org.mryan.eventnicetest.test.event.hierarchy.Fruit;
 
 /**
@@ -13,12 +14,17 @@ import org.mryan.eventnicetest.test.event.hierarchy.Fruit;
 public class FruitEaterListener {
 
     @EventReceive
-    public void eatFruit(Fruit fruit) {
+    public void eat(Fruit fruit) {
         System.out.println("eatFruit(Fruit " + fruit + ")");
     }
 
     @EventReceive
-    public void eatApple(Apple apple) {
+    public void eat(Apple apple) {
         System.out.println("eatApple(" + apple + ")");
+    }
+
+    @EventReceive
+    public void eat(Banana banana) {
+        System.out.println("eatBanana(" + banana + ")");
     }
 }

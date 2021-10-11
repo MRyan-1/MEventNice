@@ -4,6 +4,7 @@ import org.junit.Test;
 import org.mryan.eventnice.core.EventContext;
 import org.mryan.eventnicetest.test.event.MyEvent;
 import org.mryan.eventnicetest.test.event.hierarchy.Apple;
+import org.mryan.eventnicetest.test.event.hierarchy.Banana;
 import org.mryan.eventnicetest.test.event.hierarchy.Fruit;
 import org.mryan.eventnicetest.test.listener.*;
 import org.mryan.eventnicetest.test.listener.hierarchy.FruitEaterListener;
@@ -91,6 +92,8 @@ public class EventContextTest {
         context.register(new FruitEaterListener());
         System.out.println("Post 'Apple'");
         context.post(new Apple());
+        System.out.println("Post 'Banana'");
+        context.post(new Banana());
         System.out.println("Post 'Orange as Fruit'");
         context.post(new Fruit("Orange"));
     }
@@ -118,6 +121,5 @@ public class EventContextTest {
         context2.register(new MyEventListener());
         context2.post(1);
         context.post(new MyEvent("This is a test case."));
-
     }
 }
