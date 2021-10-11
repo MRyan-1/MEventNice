@@ -49,11 +49,9 @@ public class EventContextTest {
     }
 
     @Test
-    //todo bug 修复
     public void TEST_BASE_EVENT_CUSTOM() {
         EventContext context = new EventContext();
-        StringListener listener = new StringListener();
-        context.register(listener);
+        context.register(new MyEventListener());
         context.post(new MyEvent("this is a test case."));
     }
 

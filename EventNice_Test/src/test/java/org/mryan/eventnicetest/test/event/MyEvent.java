@@ -7,6 +7,7 @@ package org.mryan.eventnicetest.test.event;
  * @Version 1.0
  */
 public class MyEvent {
+
     private final String message;
 
     public MyEvent(String message) {
@@ -16,5 +17,12 @@ public class MyEvent {
 
     public String getMessage() {
         return message;
+    }
+
+    @Override
+    public String toString() {
+        return "MyEvent{" +
+                "message='" + message + '\'' +
+                '}';
     }
 }
