@@ -2,13 +2,10 @@ package org.mryan.eventnicetest.test;
 
 import org.junit.Test;
 import org.mryan.eventnice.core.EventContext;
-import org.mryan.eventnicetest.test.event.*;
+import org.mryan.eventnicetest.test.event.MyEvent;
 import org.mryan.eventnicetest.test.event.hierarchy.Apple;
 import org.mryan.eventnicetest.test.event.hierarchy.Fruit;
-import org.mryan.eventnicetest.test.listener.IntegerListener;
-import org.mryan.eventnicetest.test.listener.MultipleListeners;
-import org.mryan.eventnicetest.test.listener.NumberListener;
-import org.mryan.eventnicetest.test.listener.StringListener;
+import org.mryan.eventnicetest.test.listener.*;
 import org.mryan.eventnicetest.test.listener.hierarchy.FruitEaterListener;
 import org.mryan.eventnicetest.test.listener.hierarchy.ListenerHierarchy;
 
@@ -28,8 +25,10 @@ public class EventContextTest {
         EventContext context = new EventContext("This is a test case.");
         context.register(new IntegerListener());
         context.register(new NumberListener());
+        context.register(new LongListener());
         System.out.println("Post Simple EventBus Example");
         context.post(1);
+        context.post(1L);
     }
 
     @Test
@@ -52,8 +51,7 @@ public class EventContextTest {
     @Test
     public void TEST_BASE_EVENT_CUSTOM() {
         EventContext context = new EventContext();
-        StringListener listener = new StringListener();
-        context.register(listener);
+        context.register(new MyEventListener());
         context.post(new MyEvent("this is a test case."));
     }
 
@@ -76,7 +74,6 @@ public class EventContextTest {
      * Once an event is published, all the @EventReceive annotated methods in the listener’s hierarchy will be notified.
      */
     @Test
-    //todo 待实现
     public void LISTENER_HIERARCHY_EVENT_RECEIVER_EXAMPLE() {
         EventContext context = new EventContext();
         context.register(new ListenerHierarchy());
@@ -89,7 +86,6 @@ public class EventContextTest {
      * In the below example, the FruitEaterListener contains a subscriber method called eat. It can eat generic fruit as well as specific fruit ‘Apple’. If an ‘Apple’ is published, first eat(Apple) gets notified and then eat(Fruit)
      */
     @Test
-    //todo 待实现
     public void EVENT_HIERARCHY_EVENT_RECEIVER_EXAMPLE() {
         EventContext context = new EventContext();
         context.register(new FruitEaterListener());

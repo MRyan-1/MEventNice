@@ -33,7 +33,7 @@ public class EventContext {
 
     public EventContext(String identifier) {
         this(identifier,
-                EventDispatcher.perDefaultEventDispatcher(Executors.newSingleThreadExecutor()),
+                EventDispatcher.perDefaultEventDispatcher(Executors.newCachedThreadPool()),
                 new ReceiverRegistry()
         );
     }
