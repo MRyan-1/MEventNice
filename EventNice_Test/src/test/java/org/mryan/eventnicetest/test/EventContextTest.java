@@ -89,7 +89,6 @@ public class EventContextTest {
      * In the below example, the FruitEaterListener contains a subscriber method called eat. It can eat generic fruit as well as specific fruit ‘Apple’. If an ‘Apple’ is published, first eat(Apple) gets notified and then eat(Fruit)
      */
     @Test
-    //todo 待实现
     public void EVENT_HIERARCHY_EVENT_RECEIVER_EXAMPLE() {
         EventContext context = new EventContext();
         context.register(new FruitEaterListener());
