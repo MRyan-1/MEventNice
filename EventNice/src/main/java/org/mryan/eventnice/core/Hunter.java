@@ -5,6 +5,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArraySet;
 
 /**
@@ -14,6 +15,11 @@ import java.util.concurrent.CopyOnWriteArraySet;
  * @Version 1.0
  */
 public abstract class Hunter {
+
+    /**
+     * 方法表缓存
+     */
+    final Map<Class<?>, Map<Class<?>, Set<Method>>> methodCache = new ConcurrentHashMap<>();
 
     /**
      * 捕获指定方法

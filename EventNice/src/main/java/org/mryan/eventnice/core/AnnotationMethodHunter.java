@@ -23,24 +23,32 @@ public class AnnotationMethodHunter extends Hunter {
     @Override
     public Map<Class<?>, Set<Method>> huntingMethods(Class<?> clazz) {
         Map<Class<?>, Set<Method>> methodMap = new HashMap<>();
-        while (!MethodHelper.shouldSkipClass(clazz)) {
-            Method[] methods = clazz.getDeclaredMethods();
-            for (Method method : methods) {
-                if (MethodHelper.isConditionMethod(method)) continue;
-                Class<?>[] parameterTypes = method.getParameterTypes();
-                if (parameterTypes.length != 1) {
-                    throw new EventException(String.format(
-                            "Method %s has @EventReceive annotation but has %s parameters." + "Subscriber methods must have exactly 1 parameter.",
-                            method, parameterTypes.length));
-                }
-                Class<?> parameterType = parameterTypes[0];
-                if (!methodMap.containsKey(parameterType)) {
-                    methodMap.put(parameterType, new HashSet<>());
-                }
-                methodMap.get(parameterType).add(method);
+        //一级缓存（方发表缓存)
+        synchronized (super.methodCache) {
+            if (super.methodCache.containsKey(clazz)) {
+                methodMap = super.methodCache.get(clazz);
             }
-            //递归查找父类 支持hierarchy
-            clazz = clazz.getSuperclass();
+        }
+        if (methodMap == null || methodMap.size() == 0) {
+            while (!MethodHelper.shouldSkipClass(clazz)) {
+                Method[] methods = clazz.getDeclaredMethods();
+                for (Method method : methods) {
+                    if (MethodHelper.isConditionMethod(method)) continue;
+                    Class<?>[] parameterTypes = method.getParameterTypes();
+                    if (parameterTypes.length != 1) {
+                        throw new EventException(String.format(
+                                "Method %s has @EventReceive annotation but has %s parameters." + "Subscriber methods must have exactly 1 parameter.",
+                                method, parameterTypes.length));
+                    }
+                    Class<?> parameterType = parameterTypes[0];
+                    if (!methodMap.containsKey(parameterType)) {
+                        methodMap.put(parameterType, new HashSet<>());
+                    }
+                    methodMap.get(parameterType).add(method);
+                }
+                //递归查找父类 支持hierarchy
+                clazz = clazz.getSuperclass();
+            }
         }
         return methodMap;
     }
