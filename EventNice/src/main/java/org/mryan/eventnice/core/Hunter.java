@@ -1,10 +1,7 @@
 package org.mryan.eventnice.core;
 
 import java.lang.reflect.Method;
-import java.util.Collection;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArraySet;
 
@@ -20,6 +17,11 @@ public abstract class Hunter {
      * 方法表缓存
      */
     final Map<Class<?>, Map<Class<?>, Set<Method>>> methodCache = new ConcurrentHashMap<>();
+
+    /**
+     * 事件类型缓存
+     */
+    final Map<Class<?>, Map<Class<?>, Collection<EventReceiver>>> eventReceiverCache = new ConcurrentHashMap<>();
 
     /**
      * 捕获指定方法

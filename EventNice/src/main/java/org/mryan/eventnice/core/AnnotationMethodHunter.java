@@ -29,7 +29,7 @@ public class AnnotationMethodHunter extends Hunter {
                 methodMap = super.methodCache.get(clazz);
             }
         }
-        if (methodMap == null || methodMap.size() == 0) {
+        if (methodMap.isEmpty()) {
             while (!MethodHelper.shouldSkipClass(clazz)) {
                 Method[] methods = clazz.getDeclaredMethods();
                 for (Method method : methods) {
@@ -49,6 +49,7 @@ public class AnnotationMethodHunter extends Hunter {
                 //递归查找父类 支持hierarchy
                 clazz = clazz.getSuperclass();
             }
+            super.methodCache.put(clazz, methodMap);
         }
         return methodMap;
     }
@@ -77,24 +78,32 @@ public class AnnotationMethodHunter extends Hunter {
     public Map<Class<?>, Collection<EventReceiver>> huntingAllEventReceiver(Object receiver) {
         Map<Class<?>, Collection<EventReceiver>> receivers = new HashMap<>();
         Class<?> clazz = receiver.getClass();
-        Map<Class<?>, Set<Method>> paramMethodMap = this.huntingMethods(clazz);
-        //处理Event多继承实现
-        for (Class<?> paramClass : paramMethodMap.keySet()) {
-            Class<?> targetClazz = paramClass;
-            while (!MethodHelper.shouldSkipClass(targetClazz)) {
-                Set<Method> methods = paramMethodMap.get(targetClazz);
-                if (methods == null) {
-                    continue;
-                }
-                for (Method method : methods) {
-                    if (!receivers.containsKey(paramClass)) {
-                        receivers.put(paramClass, new ArrayList<>());
-                    }
-                    receivers.get(paramClass).add(new EventReceiver(new MethodInfo(method, targetClazz), receiver));
-                }
-                //逐级遍历Event的父类
-                targetClazz = targetClazz.getSuperclass();
+        synchronized (super.eventReceiverCache) {
+            if (eventReceiverCache.containsKey(clazz)) {
+                receivers = eventReceiverCache.get(clazz);
             }
+        }
+        if (receivers.isEmpty()) {
+            Map<Class<?>, Set<Method>> paramMethodMap = this.huntingMethods(clazz);
+            //处理Event多继承实现
+            for (Class<?> paramClass : paramMethodMap.keySet()) {
+                Class<?> targetClazz = paramClass;
+                while (!MethodHelper.shouldSkipClass(targetClazz)) {
+                    Set<Method> methods = paramMethodMap.get(targetClazz);
+                    if (methods == null) {
+                        continue;
+                    }
+                    for (Method method : methods) {
+                        if (!receivers.containsKey(paramClass)) {
+                            receivers.put(paramClass, new ArrayList<>());
+                        }
+                        receivers.get(paramClass).add(new EventReceiver(new MethodInfo(method, targetClazz), receiver));
+                    }
+                    //逐级遍历Event的父类
+                    targetClazz = targetClazz.getSuperclass();
+                }
+            }
+            eventReceiverCache.put(clazz, receivers);
         }
         return receivers;
     }
