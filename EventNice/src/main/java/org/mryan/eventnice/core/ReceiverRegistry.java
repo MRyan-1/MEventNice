@@ -1,8 +1,7 @@
 package org.mryan.eventnice.core;
 
 import java.util.Collection;
-import java.util.HashMap;
-import java.util.List;
+import java.util.Iterator;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
@@ -91,8 +90,22 @@ public class ReceiverRegistry implements Registry {
      * @param event
      * @return
      */
-    public CopyOnWriteArraySet<EventReceiver> huntingMatchedEventReceivers(Object event) {
-        return methodHunter.huntingMatchedEventReceivers(this, event);
+    public Iterator<EventReceiver> huntingMatchedEventReceivers(Object event) {
+        CopyOnWriteArraySet<EventReceiver> eventReceivers = methodHunter.huntingMatchedEventReceivers(this, event);
+        if (eventReceivers == null) {
+            return new Iterator<EventReceiver>() {
+                @Override
+                public boolean hasNext() {
+                    return false;
+                }
+
+                @Override
+                public EventReceiver next() {
+                    return null;
+                }
+            };
+        }
+        return eventReceivers.iterator();
     }
 
     public ConcurrentMap<Class<?>, CopyOnWriteArraySet<EventReceiver>> getRegistry() {
