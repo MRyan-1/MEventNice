@@ -1,4 +1,4 @@
-package org.mryan.eventnicetest.test.listener.hierarchy;
+package org.myran.eventnicetest.listener.hierarchy;
 
 import org.mryan.eventnice.annotation.EventReceive;
 
