@@ -1,5 +1,7 @@
 package org.mryan.eventnice.core;
 
+import com.google.common.util.concurrent.MoreExecutors;
+
 import java.util.concurrent.Executors;
 
 /**
@@ -33,7 +35,7 @@ public class EventContext {
 
     public EventContext(String identifier) {
         this(identifier,
-                EventDispatcher.perDefaultEventDispatcher(Executors.newCachedThreadPool()),
+                EventDispatcher.perDefaultEventDispatcher(MoreExecutors.directExecutor()),
                 new ReceiverRegistry()
         );
     }
