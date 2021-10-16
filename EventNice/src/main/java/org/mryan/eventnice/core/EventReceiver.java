@@ -58,9 +58,7 @@ public class EventReceiver {
      */
     public Object execute(Object event) throws InvocationTargetException, IllegalAccessException {
         try {
-            Method method = this.methodInfo.getMethod();
-            method.setAccessible(true);
-            return method.invoke(this.target, event);
+            return this.methodInfo.getMethod().invoke(this.target, event);
         } catch (IllegalArgumentException e) {
             LoggerUtils.error(LoggerFactory.getLogger(getClass()), "Method rejected target/argument:" + event, e);
             throw e;

@@ -2,13 +2,14 @@ package org.mryan.eventnicetest.test;
 
 import org.junit.Test;
 import org.mryan.eventnice.core.EventContext;
-import org.mryan.eventnicetest.test.event.MyEvent;
-import org.mryan.eventnicetest.test.event.hierarchy.Apple;
-import org.mryan.eventnicetest.test.event.hierarchy.Banana;
-import org.mryan.eventnicetest.test.event.hierarchy.Fruit;
-import org.mryan.eventnicetest.test.listener.*;
-import org.mryan.eventnicetest.test.listener.hierarchy.FruitEaterListener;
-import org.mryan.eventnicetest.test.listener.hierarchy.ListenerHierarchy;
+import org.myran.eventnicetest.event.MyEvent;
+import org.myran.eventnicetest.event.hierarchy.Apple;
+import org.myran.eventnicetest.event.hierarchy.Banana;
+import org.myran.eventnicetest.event.hierarchy.Fruit;
+import org.myran.eventnicetest.listener.*;
+import org.myran.eventnicetest.listener.hierarchy.FruitEaterListener;
+import org.myran.eventnicetest.listener.hierarchy.ListenerHierarchy;
+
 
 import java.util.concurrent.CountDownLatch;
 

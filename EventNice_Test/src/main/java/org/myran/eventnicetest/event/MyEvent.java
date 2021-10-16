@@ -1,4 +1,4 @@
-package org.mryan.eventnicetest.test.event;
+package org.myran.eventnicetest.event;
 
 /**
  * @description： MyEvent

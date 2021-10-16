@@ -1,9 +1,10 @@
-package org.mryan.eventnicetest.test.listener.hierarchy;
+package org.myran.eventnicetest.listener.hierarchy;
 
 import org.mryan.eventnice.annotation.EventReceive;
-import org.mryan.eventnicetest.test.event.hierarchy.Apple;
-import org.mryan.eventnicetest.test.event.hierarchy.Banana;
-import org.mryan.eventnicetest.test.event.hierarchy.Fruit;
+import org.myran.eventnicetest.event.hierarchy.Apple;
+import org.myran.eventnicetest.event.hierarchy.Banana;
+import org.myran.eventnicetest.event.hierarchy.Fruit;
+
 
 /**
  * @description： FruitEaterListener
