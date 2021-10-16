@@ -6,19 +6,18 @@ package org.myran.eventnicetest.event;
  * @Date 2021/10/8 22:37
  * @Version 1.0
  */
-public class MyEvent {
+public class MEventInt {
 
-    private final String message;
+    private final int message;
 
-    public MyEvent(String message) {
+    public MEventInt(int message) {
         this.message = message;
         System.out.println("event message:" + message);
     }
 
-    public String getMessage() {
+    public int getMessage() {
         return message;
     }
-
     @Override
     public String toString() {
         return "MyEvent{" +

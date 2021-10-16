@@ -91,7 +91,21 @@ public class ReceiverRegistry implements Registry {
      * @return
      */
     public Iterator<EventReceiver> huntingMatchedEventReceivers(Object event) {
-        return methodHunter.huntingMatchedEventReceivers(this, event).iterator();
+        CopyOnWriteArraySet<EventReceiver> eventReceivers = methodHunter.huntingMatchedEventReceivers(this, event);
+        if (eventReceivers == null) {
+            return new Iterator<EventReceiver>() {
+                @Override
+                public boolean hasNext() {
+                    return false;
+                }
+
+                @Override
+                public EventReceiver next() {
+                    return null;
+                }
+            };
+        }
+        return eventReceivers.iterator();
     }
 
     public ConcurrentMap<Class<?>, CopyOnWriteArraySet<EventReceiver>> getRegistry() {

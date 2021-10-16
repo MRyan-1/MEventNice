@@ -2,14 +2,14 @@ package org.mryan.eventnicetest.test;
 
 import org.junit.Test;
 import org.mryan.eventnice.core.EventContext;
-import org.myran.eventnicetest.event.MyEvent;
+import org.myran.eventnicetest.event.MEventInt;
+import org.myran.eventnicetest.event.MEventString;
 import org.myran.eventnicetest.event.hierarchy.Apple;
 import org.myran.eventnicetest.event.hierarchy.Banana;
 import org.myran.eventnicetest.event.hierarchy.Fruit;
 import org.myran.eventnicetest.listener.*;
 import org.myran.eventnicetest.listener.hierarchy.FruitEaterListener;
 import org.myran.eventnicetest.listener.hierarchy.ListenerHierarchy;
-
 
 import java.util.concurrent.CountDownLatch;
 
@@ -27,10 +27,9 @@ public class EventContextTest {
         EventContext context = new EventContext("This is a test case.");
         context.register(new IntegerListener());
         context.register(new NumberListener());
-        context.register(new LongListener());
         System.out.println("Post Simple EventBus Example");
-        context.post(1);
-        context.post(1L);
+        context.post(new Integer(1));
+        context.post(new Long(1));
     }
 
     @Test
@@ -54,8 +53,21 @@ public class EventContextTest {
     public void TEST_BASE_EVENT_CUSTOM() {
         EventContext context = new EventContext();
         context.register(new MyEventListener());
-        context.post(new MyEvent("this is a test case."));
+        context.post(new MEventString("this is a test case."));
+        context.post(new MEventString("this is a test case."));
     }
+
+    @Test
+    public void TEST_BASE_EVENT_CUSTOM2() {
+        EventContext context = new EventContext();
+        context.register(new MyEventListener());
+        context.post(new MEventString("this is a test case."));
+        context.post(new MEventString("this is a test case."));
+        context.post(new MEventInt(new Integer(100)));
+        context.post(new MEventInt(200));
+        context.post(1L);
+    }
+
 
     /**
      * A class can listen to more than one type of event. In the below listener,
@@ -121,6 +133,6 @@ public class EventContextTest {
         context.register(new IntegerListener());
         context2.register(new MyEventListener());
         context2.post(1);
-        context.post(new MyEvent("This is a test case."));
+        context.post(new MEventString("This is a test case."));
     }
 }
