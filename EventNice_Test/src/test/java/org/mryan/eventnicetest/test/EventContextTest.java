@@ -2,6 +2,7 @@ package org.mryan.eventnicetest.test;
 
 import org.junit.Test;
 import org.mryan.eventnice.core.EventContext;
+import org.myran.eventnicetest.Thread.MThread;
 import org.myran.eventnicetest.event.MEventInt;
 import org.myran.eventnicetest.event.MEventString;
 import org.myran.eventnicetest.event.hierarchy.Apple;
@@ -11,6 +12,9 @@ import org.myran.eventnicetest.listener.*;
 import org.myran.eventnicetest.listener.hierarchy.FruitEaterListener;
 import org.myran.eventnicetest.listener.hierarchy.ListenerHierarchy;
 
+import java.io.IOException;
+import java.net.ServerSocket;
+import java.net.Socket;
 import java.util.concurrent.CountDownLatch;
 
 
@@ -134,5 +138,26 @@ public class EventContextTest {
         context2.register(new MyEventListener());
         context2.post(1);
         context.post(new MEventString("This is a test case."));
+    }
+
+    /**
+     * 综合实例：说明：运行此程序后
+     * 用telnet命令登录：telnet 127.0.0.1 54321 ，如果你连接多个实例你会看到任何消息发送被传送到其他实例。
+     */
+    @Test
+    public void TEST_EXAMPLE_SOCKET() {
+        EventContext eventContext = new EventContext();
+        ServerSocket socket;
+        try {
+            socket = new ServerSocket(54321);
+            while (true) {
+                Socket connection = socket.accept();
+                MThread newUser = new MThread(connection, eventContext);
+                eventContext.register(newUser);
+                newUser.start();
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 }
