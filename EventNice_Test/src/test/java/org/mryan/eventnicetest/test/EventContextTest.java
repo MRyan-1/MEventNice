@@ -2,12 +2,14 @@ package org.mryan.eventnicetest.test;
 
 import org.junit.Test;
 import org.mryan.eventnice.core.EventContext;
-import org.mryan.eventnicetest.test.event.MyEvent;
-import org.mryan.eventnicetest.test.event.hierarchy.Apple;
-import org.mryan.eventnicetest.test.event.hierarchy.Fruit;
-import org.mryan.eventnicetest.test.listener.*;
-import org.mryan.eventnicetest.test.listener.hierarchy.FruitEaterListener;
-import org.mryan.eventnicetest.test.listener.hierarchy.ListenerHierarchy;
+import org.myran.eventnicetest.event.MyEvent;
+import org.myran.eventnicetest.event.hierarchy.Apple;
+import org.myran.eventnicetest.event.hierarchy.Banana;
+import org.myran.eventnicetest.event.hierarchy.Fruit;
+import org.myran.eventnicetest.listener.*;
+import org.myran.eventnicetest.listener.hierarchy.FruitEaterListener;
+import org.myran.eventnicetest.listener.hierarchy.ListenerHierarchy;
+
 
 import java.util.concurrent.CountDownLatch;
 
@@ -91,6 +93,8 @@ public class EventContextTest {
         context.register(new FruitEaterListener());
         System.out.println("Post 'Apple'");
         context.post(new Apple());
+        System.out.println("Post 'Banana'");
+        context.post(new Banana());
         System.out.println("Post 'Orange as Fruit'");
         context.post(new Fruit("Orange"));
     }
@@ -108,5 +112,15 @@ public class EventContextTest {
             }
         }).start();
         countDownLatch.await();
+    }
+
+    @Test
+    public void TEST_EVENT_RECEIVER_CONTEXT_INSTANCE() {
+        EventContext context = EventContext.getDefault();
+        EventContext context2 = EventContext.getDefault();
+        context.register(new IntegerListener());
+        context2.register(new MyEventListener());
+        context2.post(1);
+        context.post(new MyEvent("This is a test case."));
     }
 }

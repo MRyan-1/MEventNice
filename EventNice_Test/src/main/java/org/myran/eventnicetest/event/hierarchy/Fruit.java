@@ -1,4 +1,4 @@
-package org.mryan.eventnicetest.test.event.hierarchy;
+package org.myran.eventnicetest.event.hierarchy;
 
 /**
  * @description： Fruit

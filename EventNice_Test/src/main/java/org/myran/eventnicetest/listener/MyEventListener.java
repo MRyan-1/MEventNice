@@ -1,7 +1,7 @@
-package org.mryan.eventnicetest.test.listener;
+package org.myran.eventnicetest.listener;
 
 import org.mryan.eventnice.annotation.EventReceive;
-import org.mryan.eventnicetest.test.event.MyEvent;
+import org.myran.eventnicetest.event.MyEvent;
 
 /**
  * @description： MyEventListener

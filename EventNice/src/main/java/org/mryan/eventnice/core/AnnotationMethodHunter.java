@@ -23,24 +23,33 @@ public class AnnotationMethodHunter extends Hunter {
     @Override
     public Map<Class<?>, Set<Method>> huntingMethods(Class<?> clazz) {
         Map<Class<?>, Set<Method>> methodMap = new HashMap<>();
-        while (!MethodHelper.shouldSkipClass(clazz)) {
-            Method[] methods = clazz.getDeclaredMethods();
-            for (Method method : methods) {
-                if (MethodHelper.isConditionMethod(method)) continue;
-                Class<?>[] parameterTypes = method.getParameterTypes();
-                if (parameterTypes.length != 1) {
-                    throw new EventException(String.format(
-                            "Method %s has @EventReceive annotation but has %s parameters." + "Subscriber methods must have exactly 1 parameter.",
-                            method, parameterTypes.length));
-                }
-                Class<?> parameterType = parameterTypes[0];
-                if (!methodMap.containsKey(parameterType)) {
-                    methodMap.put(parameterType, new HashSet<>());
-                }
-                methodMap.get(parameterType).add(method);
+        //一级缓存（方发表缓存)
+        synchronized (super.methodCache) {
+            if (super.methodCache.containsKey(clazz)) {
+                methodMap = super.methodCache.get(clazz);
             }
-            //递归查找父类 支持hierarchy
-            clazz = clazz.getSuperclass();
+        }
+        if (methodMap.isEmpty()) {
+            while (!MethodHelper.shouldSkipClass(clazz)) {
+                Method[] methods = clazz.getDeclaredMethods();
+                for (Method method : methods) {
+                    if (MethodHelper.isConditionMethod(method)) continue;
+                    Class<?>[] parameterTypes = method.getParameterTypes();
+                    if (parameterTypes.length != 1) {
+                        throw new EventException(String.format(
+                                "Method %s has @EventReceive annotation but has %s parameters." + "Subscriber methods must have exactly 1 parameter.",
+                                method, parameterTypes.length));
+                    }
+                    Class<?> parameterType = parameterTypes[0];
+                    if (!methodMap.containsKey(parameterType)) {
+                        methodMap.put(parameterType, new HashSet<>());
+                    }
+                    methodMap.get(parameterType).add(method);
+                }
+                //递归查找父类 支持hierarchy
+                clazz = clazz.getSuperclass();
+            }
+            super.methodCache.put(clazz, methodMap);
         }
         return methodMap;
     }
@@ -69,24 +78,32 @@ public class AnnotationMethodHunter extends Hunter {
     public Map<Class<?>, Collection<EventReceiver>> huntingAllEventReceiver(Object receiver) {
         Map<Class<?>, Collection<EventReceiver>> receivers = new HashMap<>();
         Class<?> clazz = receiver.getClass();
-        Map<Class<?>, Set<Method>> paramMethodMap = this.huntingMethods(clazz);
-        //处理Event多继承实现
-        for (Class<?> paramClass : paramMethodMap.keySet()) {
-            Class<?> targetClazz = paramClass;
-            while (!MethodHelper.shouldSkipClass(targetClazz)) {
-                Set<Method> methods = paramMethodMap.get(targetClazz);
-                if (methods == null) {
-                    continue;
-                }
-                for (Method method : methods) {
-                    if (!receivers.containsKey(paramClass)) {
-                        receivers.put(paramClass, new ArrayList<>());
-                    }
-                    receivers.get(paramClass).add(new EventReceiver(new MethodInfo(method, targetClazz), receiver));
-                }
-                //逐级遍历Event的父类
-                targetClazz = targetClazz.getSuperclass();
+        synchronized (super.eventReceiverCache) {
+            if (eventReceiverCache.containsKey(clazz)) {
+                receivers = eventReceiverCache.get(clazz);
             }
+        }
+        if (receivers.isEmpty()) {
+            Map<Class<?>, Set<Method>> paramMethodMap = this.huntingMethods(clazz);
+            //处理Event多继承实现
+            for (Class<?> paramClass : paramMethodMap.keySet()) {
+                Class<?> targetClazz = paramClass;
+                while (!MethodHelper.shouldSkipClass(targetClazz)) {
+                    Set<Method> methods = paramMethodMap.get(targetClazz);
+                    if (methods == null) {
+                        continue;
+                    }
+                    for (Method method : methods) {
+                        if (!receivers.containsKey(paramClass)) {
+                            receivers.put(paramClass, new ArrayList<>());
+                        }
+                        receivers.get(paramClass).add(new EventReceiver(new MethodInfo(method, targetClazz), receiver));
+                    }
+                    //逐级遍历Event的父类
+                    targetClazz = targetClazz.getSuperclass();
+                }
+            }
+            eventReceiverCache.put(clazz, receivers);
         }
         return receivers;
     }

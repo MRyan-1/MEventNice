@@ -1,5 +1,7 @@
 package org.mryan.eventnice.core;
 
+import com.google.common.util.concurrent.MoreExecutors;
+
 import java.util.concurrent.Executors;
 
 /**
@@ -27,13 +29,32 @@ public class EventContext {
     private final String identifier;
 
 
+    private volatile static EventContext eventContext;
+
+    /**
+     * 默认单例实现
+     *
+     * @return
+     */
+    public static EventContext getDefault() {
+        if (null == eventContext) {
+            synchronized (EventContext.class) {
+                if (null == eventContext) {
+                    eventContext = new EventContext();
+                }
+            }
+        }
+        return eventContext;
+    }
+
+
     public EventContext() {
         this("default");
     }
 
     public EventContext(String identifier) {
         this(identifier,
-                EventDispatcher.perDefaultEventDispatcher(Executors.newCachedThreadPool()),
+                EventDispatcher.perDefaultEventDispatcher(MoreExecutors.directExecutor()),
                 new ReceiverRegistry()
         );
     }
