@@ -15,7 +15,6 @@ import java.util.concurrent.CopyOnWriteArraySet;
  */
 public class ReceiverRegistry implements Registry {
 
-
     private final ConcurrentMap<Class<?>, CopyOnWriteArraySet<EventReceiver>> registry = new ConcurrentHashMap<>();
 
     /**
@@ -26,7 +25,6 @@ public class ReceiverRegistry implements Registry {
     public ReceiverRegistry() {
         this.methodHunter = new AnnotationMethodHunter();
     }
-
 
     /**
      * register event target
