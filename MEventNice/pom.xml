@@ -13,6 +13,7 @@
     <url>http://www.wormholestack.cn/</url>
 
     <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <maven.compiler.source>8</maven.compiler.source>
         <maven.compiler.target>8</maven.compiler.target>
         <slf4j.version>2.0.0-alpha2</slf4j.version>
@@ -71,13 +72,14 @@
         </repository>
     </distributionManagement>
 
+
     <profiles>
         <profile>
             <id>release</id>
             <build>
                 <plugins>
                     <!-- 发布Jar到Maven仓库 Begin -->
-                    <!--生成 Javadoc 和 Source jar 文件-->
+                    <!--打包源码的插件-->
                     <plugin>
                         <groupId>org.apache.maven.plugins</groupId>
                         <artifactId>maven-source-plugin</artifactId>
@@ -91,32 +93,32 @@
                             </execution>
                         </executions>
                     </plugin>
+                    <!-- Javadoc 文档生成插件-->
                     <plugin>
                         <groupId>org.apache.maven.plugins</groupId>
                         <artifactId>maven-javadoc-plugin</artifactId>
-                        <version>2.9.1</version>
+                        <version>3.0.1</version>
+                        <configuration>
+                            <encoding>UTF-8</encoding>
+                            <aggregate>true</aggregate>
+                            <charset>UTF-8</charset>
+                            <docencoding>UTF-8</docencoding>
+                        </configuration>
                         <executions>
                             <execution>
                                 <id>attach-javadocs</id>
+                                <phase>package</phase>
                                 <goals>
                                     <goal>jar</goal>
                                 </goals>
+                                <configuration>
+                                    <!-- <additionalparam>-Xdoclint:none</additionalparam>  -->
+                                    <additionalJOption>-Xdoclint:none</additionalJOption>
+                                </configuration>
                             </execution>
                         </executions>
                     </plugin>
-                    <!--Nexus Staging Maven 插件是将组件部署到 OSSRH 并将它们发布到中央存储库的推荐方式-->
-                    <plugin>
-                        <groupId>org.sonatype.plugins</groupId>
-                        <artifactId>nexus-staging-maven-plugin</artifactId>
-                        <version>1.6.7</version>
-                        <extensions>true</extensions>
-                        <configuration>
-                            <serverId>ossrh</serverId>
-                            <nexusUrl>https://s01.oss.sonatype.org/</nexusUrl>
-                            <autoReleaseAfterClose>true</autoReleaseAfterClose>
-                        </configuration>
-                    </plugin>
-                    <!--Maven GPG插件用于使用以下配置对组件进行签名-->
+                    <!--公钥私钥插件，也就是上传需要进行验证用户名和密码过程中需要用到的插件-->
                     <plugin>
                         <groupId>org.apache.maven.plugins</groupId>
                         <artifactId>maven-gpg-plugin</artifactId>
@@ -130,17 +132,6 @@
                                 </goals>
                             </execution>
                         </executions>
-                    </plugin>
-                    <plugin>
-                        <groupId>org.sonatype.plugins</groupId>
-                        <artifactId>nexus-staging-maven-plugin</artifactId>
-                        <version>1.6.7</version>
-                        <extensions>true</extensions>
-                        <configuration>
-                            <serverId>ossrh</serverId>
-                            <nexusUrl>https://s01.oss.sonatype.org/</nexusUrl>
-                            <autoReleaseAfterClose>true</autoReleaseAfterClose>
-                        </configuration>
                     </plugin>
                     <!--用于自动化更改的Maven POM文件完整性检查-->
                     <plugin>
@@ -158,6 +149,5 @@
             </build>
         </profile>
     </profiles>
-
 
 </project>
