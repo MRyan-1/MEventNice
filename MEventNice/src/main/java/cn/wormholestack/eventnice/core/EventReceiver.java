@@ -38,7 +38,6 @@ public class EventReceiver {
      */
     public final String name;
 
-
     public EventReceiver(MethodInfo methodInfo, Object target) {
         this.target = target;
         this.targetType = methodInfo.getTargetClass();

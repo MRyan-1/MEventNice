@@ -13,7 +13,7 @@ public class Application {
 
     public static void main(String[] args) {
         EventContext context = new EventContext("This is a test case.");
-        context.register(new LongListener());
+        context.register(null);
         System.out.println("Post Simple EventBus Example");
         context.post(1);
         context.post(1L);
