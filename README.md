@@ -21,9 +21,30 @@ V1.0.1 completed:
 3. 实现对事件接收器多继承功能的支持
 
 V1.0.2 completed:
+
 1. 对捕猎者捕获相关事件接收器流程优化支持缓存，提升捕获效率
 2. 对方法捕获流程优化支持缓存，提升捕获效率
 3. 解决前版本的异常bug
+
+## install
+
+[中央Maven仓库](https://search.maven.org/artifact/cn.wormholestack.meventnice/MEventNice)
+
+**Maven引用**
+
+```
+<dependency>
+  <groupId>cn.wormholestack.meventnice</groupId>
+  <artifactId>MEventNice</artifactId>
+  <version>1.0.2</version>
+</dependency>
+```
+
+**Gradle引用**
+
+```java
+implementation'cn.wormholestack.meventnice:MEventNice:1.0.2'
+```
 
 ## License
 

@@ -1,5 +1,8 @@
 package cn.wormholestack.eventnice.core;
 
+import cn.wormholestack.eventnice.exception.EventException;
+import cn.wormholestack.eventnice.model.ResultMsg;
+import cn.wormholestack.eventnice.utils.ParamValidator;
 import com.google.common.util.concurrent.MoreExecutors;
 
 /**
@@ -9,7 +12,6 @@ import com.google.common.util.concurrent.MoreExecutors;
  * @Version 1.0
  */
 public class EventContext {
-
 
     /**
      * 事件调度器
@@ -26,7 +28,9 @@ public class EventContext {
      */
     private final String identifier;
 
-
+    /**
+     * 单例事件总线上下文
+     */
     private volatile static EventContext eventContext;
 
     /**
@@ -45,7 +49,6 @@ public class EventContext {
         return eventContext;
     }
 
-
     public EventContext() {
         this("default");
     }
@@ -57,13 +60,11 @@ public class EventContext {
         );
     }
 
-
     public EventContext(String identifier, EventDispatcher dispatcher, ReceiverRegistry registry) {
         this.identifier = identifier;
         this.dispatcher = dispatcher;
         this.registry = registry;
     }
-
 
     /**
      * 事件调度，向所有已注册的事件接收方发送消息通知
@@ -71,6 +72,10 @@ public class EventContext {
      * @param event
      */
     public void post(Object event) {
+        ResultMsg resultMsg = ParamValidator.objectNullError(event, "Dispatching event cannot be null");
+        if (resultMsg != null) {
+            throw new EventException(resultMsg.getMessage());
+        }
         dispatcher.post(event, registry);
     }
 
@@ -82,6 +87,10 @@ public class EventContext {
      * @param listener
      */
     public void register(Object listener) {
+        ResultMsg resultMsg = ParamValidator.objectNullError(listener, "Registering listener cannot be null");
+        if (resultMsg != null) {
+            throw new EventException(resultMsg.getMessage());
+        }
         registry.register(listener);
     }
 
@@ -92,13 +101,14 @@ public class EventContext {
      * @param listener
      */
     public void unregister(Object listener) {
+        ResultMsg resultMsg = ParamValidator.objectNullError(listener, "Unregistering listener cannot be null");
+        if (resultMsg != null) {
+            throw new EventException(resultMsg.getMessage());
+        }
         registry.unregister(listener);
     }
-
 
     public String getIdentifier() {
         return identifier;
     }
-
-
 }
